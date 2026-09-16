@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo Paintworks — Residential &amp; Commercial Painting in Vernon, BC</title>
+<meta name="description" content="Echo Paintworks is a residential and commercial painting company based in Vernon, BC, serving the Okanagan Valley. Get a free quote today.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <a href="index.html" class="active">Home</a>
+      <a href="account.html">Account</a>
+      <a href="quote.html">Get a Quote</a>
+      <a href="services.html">Services</a>
+      <a href="past-work.html">Past Work</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="hero">
+  <img class="hero-mountain" src="assets/icon_white.png" alt="" onerror="this.src='assets/logo_full_white.png'">
+  <div class="wrap hero-inner">
+    <div class="eyebrow-line"><span class="rule"></span> Based in Vernon, serving the greater Okanagan Valley</div>
+    <h1>A fresh perspective for your home or business.</h1>
+    <p class="lede">Residential and commercial painting, done with the kind of care you'd want for your own home. Clean lines, real prep work, and a crew that shows up when they say they will.</p>
+    <div class="hero-ctas">
+      <a href="quote.html" class="btn btn-fill">Get a free quote</a>
+      <a href="services.html" class="btn btn-light">See our services</a>
+    </div>
+  </div>
+</section>
+
+<section class="section-line-top">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Painting inside and out, for homes and businesses.</h2>
+      <p>Every job starts with the same question: what does this space need to look great for years, not just for the walkthrough?</p>
+    </div>
+    <div class="grid-2">
+      <div class="cell">
+        <h3>Interior Painting</h3>
+        <p>Walls, ceilings, trim, and cabinetry — clean cut lines and a finish that holds up to daily life.</p>
+      </div>
+      <div class="cell">
+        <h3>Exterior Painting</h3>
+        <p>Siding, fascia, and trim, prepped properly so the finish stands up to the harsh Okanagan summers and winters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark section-line-top">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>What working with us looks like</h2>
+    </div>
+    <div class="grid-3">
+      <div class="cell">
+        <h3>Free, honest quote</h3>
+        <p>We walk the space, ask what matters to you, and give you a number you can actually plan around.</p>
+      </div>
+      <div class="cell">
+        <h3>Proper prep, every time</h3>
+        <p>Patching, sanding, masking, and priming — the unglamorous work that decides how the finish ages.</p>
+      </div>
+      <div class="cell">
+        <h3>A clean handoff</h3>
+        <p>We walk it with you at the end, touch up anything that needs it, and leave the space the way we found it — just painted.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="wrap">
+    <h2>Ready to take the next steps</h2>
+    <a href="quote.html" class="btn btn-light">Request your free quote</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <img src="assets/logo_full_white.png" alt="Echo Paintworks">
+        <p>Residential &amp; commercial painting based in Vernon, BC, serving the greater Okanagan Valley.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="index.html">Home</a>
+        <a href="account.html">Account</a>
+        <a href="quote.html">Get a Quote</a>
+        <a href="services.html">Services</a>
+        <a href="past-work.html">Past Work</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="tel:7782128528">778-212-8528</a>
+        <a href="mailto:Contact@Echopaintworks.com">Contact@Echopaintworks.com</a>
+        <p>Okanagan, BC</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Echo Paintworks. All rights reserved.</span>
+      <span>A Fresher Perspective.</span>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="script.js"></script>
+</body>
+</html>

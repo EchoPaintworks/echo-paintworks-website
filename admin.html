@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Echo Paintworks</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<style>
+  .admin-grid { display:grid; grid-template-columns: 280px 1fr; gap:0; border:1px solid var(--line); min-height:560px; }
+  .cust-list { border-right:1px solid var(--line); overflow-y:auto; max-height:640px; }
+  .cust-row { padding:16px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .cust-row:hover, .cust-row.active { background:var(--paper-dim); }
+  .cust-row .cname { font-weight:600; }
+  .cust-row .cstatus { font-size:0.82rem; color:var(--stone); }
+  .panel { padding:24px; }
+  .msg-thread { border:1px solid var(--line); padding:16px; max-height:340px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .msg-bubble { max-width:75%; padding:9px 13px; border-radius:2px; font-size:0.92rem; }
+  .msg-customer { align-self:flex-start; background:var(--paper-dim); }
+  .msg-admin { align-self:flex-end; background:var(--lake); color:var(--paper); }
+  .msg-time { font-size:0.72rem; color:var(--stone); margin-top:3px; }
+  select.status-select { width:auto; display:inline-block; padding:8px 10px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <span style="color:var(--lake); font-weight:600;">Admin</span>
+    </nav>
+    <button class="btn btn-dark" id="logoutBtn" style="padding:8px 16px; font-size:0.85rem;">Log out</button>
+  </div>
+</header>
+
+<section style="padding:40px 0;">
+  <div class="wrap" style="max-width:1100px;">
+    <h1 style="font-size:1.8rem; margin-bottom:24px;">Customer dashboard</h1>
+
+    <div class="admin-grid">
+      <div class="cust-list" id="custList"></div>
+      <div class="panel" id="panel">
+        <p style="color:var(--stone);">Select a customer on the left.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const supa = supabase.createClient(window.ECHO_CONFIG.SUPABASE_URL, window.ECHO_CONFIG.SUPABASE_ANON_KEY);
+const STAGES = ['requested','quoted','scheduled','in_progress','complete','paid'];
+const LABELS = {requested:'Requested / In Contact', quoted:'Quoted', scheduled:'Scheduled', in_progress:'In Progress', complete:'Complete', paid:'Paid'};
+
+let customers = [];
+let activeCustomer = null;
+
+async function init() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  const { data: profile } = await supa.from('profiles').select('*').eq('id', session.user.id).single();
+  if (!profile || profile.role !== 'admin') { window.location.href = 'dashboard.html'; return; }
+
+  const { data: profiles } = await supa.from('profiles').select('*').eq('role','customer').order('created_at', {ascending:false});
+  const { data: projects } = await supa.from('projects').select('*');
+
+  customers = (profiles || []).map(p => ({
+    ...p,
+    project: (projects || []).filter(pr => pr.customer_id === p.id).sort((a,b)=> new Date(b.created_at)-new Date(a.created_at))[0] || null
+  }));
+
+  renderList();
+}
+
+function renderList() {
+  const list = document.getElementById('custList');
+  list.innerHTML = '';
+  if (!customers.length) {
+    list.innerHTML = '<p style="padding:16px; color:var(--stone);">No customers yet.</p>';
+    return;
+  }
+  customers.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'cust-row' + (activeCustomer && activeCustomer.id === c.id ? ' active' : '');
+    row.innerHTML = `<div class="cname">${c.full_name || c.email}</div><div class="cstatus">${c.project ? LABELS[c.project.status] : 'No project'}</div>`;
+    row.addEventListener('click', () => openCustomer(c));
+    list.appendChild(row);
+  });
+}
+
+async function openCustomer(c) {
+  activeCustomer = c;
+  renderList();
+  const panel = document.getElementById('panel');
+
+  let projectHtml = '<p style="color:var(--stone);">No project on file. Create one below.</p>';
+  if (c.project) {
+    projectHtml = `
+      <div style="margin-bottom:20px;">
+        <label>Status</label>
+        <select class="status-select" id="statusSelect">
+          ${STAGES.map(s => `<option value="${s}" ${s===c.project.status?'selected':''}>${LABELS[s]}</option>`).join('')}
+        </select>
+        <button class="btn btn-dark" id="saveStatusBtn" style="padding:8px 14px; font-size:0.85rem; margin-left:8px;">Save</button>
+      </div>
+      <div style="margin-bottom:20px;">
+        <button class="btn btn-dark" id="createInvoiceBtn" style="padding:8px 14px; font-size:0.85rem;">Create payment link</button>
+        <span id="invoiceLinkOut" style="margin-left:10px; font-size:0.85rem;"></span>
+      </div>`;
+  } else {
+    projectHtml = `<button class="btn btn-dark" id="newProjectBtn" style="padding:8px 14px; font-size:0.85rem;">Start a project for this customer</button>`;
+  }
+
+  panel.innerHTML = `
+    <h3>${c.full_name || c.email}</h3>
+    <p style="color:var(--stone); margin-bottom:20px;">${c.email}${c.phone ? ' · ' + c.phone : ''}</p>
+    ${projectHtml}
+    <h4 style="margin:24px 0 10px;">Messages</h4>
+    <div class="msg-thread" id="thread"></div>
+    <form id="replyForm" style="display:flex; gap:10px;">
+      <input type="text" id="replyInput" placeholder="Reply${c.phone ? ' (sends as a text)' : ''}..." style="flex:1;" required>
+      <button type="submit" class="btn btn-fill">Send</button>
+    </form>
+  `;
+
+  document.getElementById('newProjectBtn')?.addEventListener('click', async () => {
+    const { data } = await supa.from('projects').insert({ customer_id: c.id, title: 'Painting Project' }).select().single();
+    c.project = data;
+    openCustomer(c);
+  });
+  document.getElementById('saveStatusBtn')?.addEventListener('click', async () => {
+    const newStatus = document.getElementById('statusSelect').value;
+    await supa.from('projects').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', c.project.id);
+    c.project.status = newStatus;
+    renderList();
+  });
+  document.getElementById('createInvoiceBtn')?.addEventListener('click', async () => {
+    const amountStr = prompt('Invoice amount in dollars (e.g. 1200):');
+    if (!amountStr) return;
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ amount: parseFloat(amountStr), customer_email: c.email, project_id: c.project.id })
+    });
+    const out = await res.json();
+    if (out.url) {
+      await supa.from('projects').update({ stripe_checkout_url: out.url }).eq('id', c.project.id);
+      document.getElementById('invoiceLinkOut').innerHTML = `<a href="${out.url}" target="_blank">Link ready — copy &amp; send</a>`;
+    } else {
+      document.getElementById('invoiceLinkOut').textContent = 'Error creating link.';
+    }
+  });
+
+  await loadMessages(c.id);
+
+  document.getElementById('replyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('replyInput');
+    const body = input.value.trim();
+    if (!body) return;
+    input.value = '';
+    await supa.from('messages').insert({ customer_id: c.id, sender: 'admin', body, channel: c.phone ? 'sms' : 'dashboard' });
+    if (c.phone) {
+      fetch('/api/send-sms', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ to: c.phone, body })
+      }).catch(()=>{});
+    }
+    await loadMessages(c.id);
+  });
+}
+
+async function loadMessages(customerId) {
+  const { data: msgs } = await supa.from('messages').select('*').eq('customer_id', customerId).order('created_at', {ascending:true});
+  const thread = document.getElementById('thread');
+  thread.innerHTML = '';
+  (msgs || []).forEach(m => {
+    const b = document.createElement('div');
+    b.className = 'msg-bubble msg-' + m.sender;
+    b.innerHTML = m.body.replace(/</g,'&lt;') + '<div class="msg-time">' + new Date(m.created_at).toLocaleString() + '</div>';
+    thread.appendChild(b);
+  });
+  thread.scrollTop = thread.scrollHeight;
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supa.auth.signOut();
+  window.location.href = 'index.html';
+});
+
+init();
+setInterval(() => { if (activeCustomer) loadMessages(activeCustomer.id); }, 15000);
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Echo Paintworks</title>
+<meta name="description" content="Interior, exterior, and commercial painting services from Echo Paintworks in Vernon, BC.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="account.html">Account</a>
+      <a href="quote.html">Get a Quote</a>
+      <a href="services.html" class="active">Services</a>
+      <a href="past-work.html">Past Work</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="hero" style="padding:72px 0 60px;">
+  <img class="hero-mountain" src="assets/icon_white.png" alt="">
+  <div class="wrap hero-inner">
+    <div class="eyebrow-line"><span class="rule"></span> Services</div>
+    <h1 style="font-size:clamp(2.1rem,4vw,3rem);">Every surface, inside and out.</h1>
+    <p class="lede">If it can be painted, stained, or refinished, it's likely something we handle regularly — residential or commercial.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+
+    <div class="service-row">
+      <div class="tile service-photo"><img class="tile-icon" src="assets/icon_black.png" alt=""><span class="tile-cap">Interior Painting</span></div>
+      <div class="service-text">
+        <h3>Interior Painting</h3>
+        <p>Walls, ceilings, doors, trim, and built-ins. We protect your floors and furniture, cut clean lines by hand, and match sheen to how the room actually gets used — eggshell in the living room, something more washable in a kitchen or a kid's bathroom.</p>
+      </div>
+    </div>
+
+    <div class="service-row reverse">
+      <div class="tile service-photo"><img class="tile-icon" src="assets/icon_black.png" alt=""><span class="tile-cap">Exterior Painting</span></div>
+      <div class="service-text">
+        <h3>Exterior Painting</h3>
+        <p>Siding, fascia, soffits, eaves, and trim. Okanagan summers and winters are hard on a paint job, so we scrape, sand, and prime properly before a single top coat goes on — that's the part that decides whether it lasts five years or fifteen.</p>
+      </div>
+    </div>
+
+    <div class="service-row">
+      <div class="tile service-photo"><img class="tile-icon" src="assets/icon_black.png" alt=""><span class="tile-cap">Cabinet &amp; Trim Refinishing</span></div>
+      <div class="service-text">
+        <h3>Cabinet &amp; Trim Refinishing</h3>
+        <p>A full cabinet respray or a simple trim refresh, sprayed or brushed depending on the finish you want. A good way to change the feel of a kitchen without a full renovation budget.</p>
+      </div>
+    </div>
+
+    <div class="service-row reverse">
+      <div class="tile service-photo"><img src="assets/service-deck-staining.jpg" alt="Deck staining in progress" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="service-text">
+        <h3>Deck &amp; Fence Staining</h3>
+        <p>Cleaning, sanding, and staining for decks, fences, and runnerboards — built to handle foot traffic and direct sun without peeling or graying out early.</p>
+      </div>
+    </div>
+
+    <div class="service-row">
+      <div class="tile service-photo"><img src="assets/service-pressure-washing.jpg" alt="Pressure washing siding" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="service-text">
+        <h3>Surface Prep &amp; Pressure Washing</h3>
+        <p>Sometimes the job is just getting a surface ready — pressure washing siding and decks, patching drywall, or sanding down old paint before a repaint.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!--
+  HOW TO ADD REAL PHOTOS TO A SERVICE:
+  For any <div class="tile service-photo">, replace:
+    <img class="tile-icon" src="assets/icon_black.png" alt="">
+  with:
+    <img src="assets/your-photo.jpg" alt="Short description" style="width:100%; height:100%; object-fit:cover;">
+  Put the photo file itself in the "assets" folder first.
+-->
+
+<section class="section-dark section-line-top">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:36px;">
+      <h2>Not sure which category your project falls into?</h2>
+      <p style="color:var(--stone-light);">Most quotes end up being a mix of a few of these. Tell us what you're picturing and we'll figure out the scope together.</p>
+    </div>
+    <a href="quote.html" class="btn btn-light">Request a free quote</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <img src="assets/logo_full_white.png" alt="Echo Paintworks">
+        <p>Residential &amp; commercial painting based in Vernon, BC, serving the greater Okanagan Valley.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="index.html">Home</a>
+        <a href="account.html">Account</a>
+        <a href="quote.html">Get a Quote</a>
+        <a href="services.html">Services</a>
+        <a href="past-work.html">Past Work</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="tel:7782128528">778-212-8528</a>
+        <a href="mailto:Contact@Echopaintworks.com">Contact@Echopaintworks.com</a>
+        <p>Okanagan, BC</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Echo Paintworks. All rights reserved.</span>
+      <span>A Fresher Perspective.</span>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="script.js"></script>
+</body>
+</html>

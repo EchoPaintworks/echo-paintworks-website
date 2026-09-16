@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Echo Paintworks</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<style>
+  .status-track { display:flex; flex-wrap:wrap; gap:0; margin: 24px 0 40px; }
+  .status-step { flex:1; min-width:100px; text-align:center; padding:14px 8px; border-bottom:3px solid var(--line); color:var(--stone); font-size:0.85rem; }
+  .status-step.done { border-color:var(--lake); color:var(--ink); font-weight:600; }
+  .status-step.current { border-color:var(--lake); color:var(--lake); font-weight:600; }
+  .msg-thread { border:1px solid var(--line); padding:20px; max-height:420px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
+  .msg-bubble { max-width:75%; padding:10px 14px; border-radius:2px; font-size:0.95rem; }
+  .msg-customer { align-self:flex-end; background:var(--lake); color:var(--paper); }
+  .msg-admin { align-self:flex-start; background:var(--paper-dim); color:var(--ink); }
+  .msg-time { font-size:0.75rem; color:var(--stone); margin-top:4px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="dashboard.html" class="active">Account</a>
+      <a href="quote.html">Get a Quote</a>
+      <a href="services.html">Services</a>
+      <a href="past-work.html">Past Work</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section style="padding:56px 0;">
+  <div class="wrap" style="max-width:820px;">
+    <div class="section-head" style="margin-bottom:8px;">
+      <h1 style="font-size:2rem;">Hi <span id="nameSpot">there</span></h1>
+      <button class="btn btn-dark" id="logoutBtn" style="padding:10px 18px; font-size:0.9rem;">Log out</button>
+    </div>
+
+    <div id="noProjectMsg" style="display:none; color:var(--stone); margin-bottom:24px;">
+      No active project on file yet — once you request a quote, it'll show up here.
+    </div>
+
+    <div id="projectBlock" style="display:none;">
+      <h3 id="projectTitle" style="margin-bottom:4px;"></h3>
+      <div class="status-track" id="statusTrack"></div>
+      <div id="payBlock" style="display:none; margin-bottom:32px;">
+        <a id="payLink" href="#" target="_blank" class="btn btn-fill">Pay invoice</a>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:14px;">Messages</h3>
+    <div class="msg-thread" id="thread"></div>
+    <form id="msgForm" style="display:flex; gap:10px;">
+      <input type="text" id="msgInput" placeholder="Type a message..." style="flex:1;" required>
+      <button type="submit" class="btn btn-fill">Send</button>
+    </form>
+  </div>
+</section>
+
+<script>
+const supa = supabase.createClient(window.ECHO_CONFIG.SUPABASE_URL, window.ECHO_CONFIG.SUPABASE_ANON_KEY);
+const STAGES = ['requested','quoted','scheduled','in_progress','complete','paid'];
+const LABELS = {requested:'Requested', quoted:'Quoted', scheduled:'Scheduled', in_progress:'In Progress', complete:'Complete', paid:'Paid'};
+
+let user = null;
+
+async function init() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  user = session.user;
+
+  const { data: profile } = await supa.from('profiles').select('*').eq('id', user.id).single();
+  if (profile && profile.role === 'admin') { window.location.href = 'admin.html'; return; }
+  document.getElementById('nameSpot').textContent = (profile && profile.full_name) ? profile.full_name.split(' ')[0] : '';
+
+  const { data: projects } = await supa.from('projects').select('*').eq('customer_id', user.id).order('created_at', {ascending:false});
+  if (projects && projects.length) {
+    renderProject(projects[0]);
+  } else {
+    document.getElementById('noProjectMsg').style.display = 'block';
+  }
+
+  await loadMessages();
+}
+
+function renderProject(p) {
+  document.getElementById('projectBlock').style.display = 'block';
+  document.getElementById('projectTitle').textContent = p.title || 'Your Project';
+  const track = document.getElementById('statusTrack');
+  track.innerHTML = '';
+  const currentIdx = STAGES.indexOf(p.status);
+  STAGES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'status-step' + (i < currentIdx ? ' done' : i === currentIdx ? ' current' : '');
+    div.textContent = LABELS[s];
+    track.appendChild(div);
+  });
+  if (p.stripe_checkout_url && p.status !== 'paid') {
+    document.getElementById('payBlock').style.display = 'block';
+    document.getElementById('payLink').href = p.stripe_checkout_url;
+  }
+}
+
+async function loadMessages() {
+  const { data: msgs } = await supa.from('messages').select('*').eq('customer_id', user.id).order('created_at', {ascending:true});
+  const thread = document.getElementById('thread');
+  thread.innerHTML = '';
+  (msgs || []).forEach(m => {
+    const b = document.createElement('div');
+    b.className = 'msg-bubble msg-' + m.sender;
+    b.innerHTML = m.body.replace(/</g,'&lt;') + '<div class="msg-time">' + new Date(m.created_at).toLocaleString() + '</div>';
+    thread.appendChild(b);
+  });
+  thread.scrollTop = thread.scrollHeight;
+}
+
+document.getElementById('msgForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('msgInput');
+  const body = input.value.trim();
+  if (!body) return;
+  input.value = '';
+
+  await supa.from('messages').insert({ customer_id: user.id, sender: 'customer', body, channel: 'dashboard' });
+  await loadMessages();
+
+  const { data: { session } } = await supa.auth.getSession();
+  fetch('/api/notify-admin-message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ body })
+  }).catch(() => {});
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supa.auth.signOut();
+  window.location.href = 'index.html';
+});
+
+init();
+</script>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Echo Paintworks. All rights reserved.</span>
+      <span>A Fresher Perspective.</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="script.js"></script>
+</body>
+</html>

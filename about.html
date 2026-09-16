@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About &amp; Contact — Echo Paintworks</title>
+<meta name="description" content="Meet Echo Paintworks, a residential and commercial painting company based in Vernon, BC.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="account.html">Account</a>
+      <a href="quote.html">Get a Quote</a>
+      <a href="services.html">Services</a>
+      <a href="past-work.html">Past Work</a>
+      <a href="about.html" class="active">About</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="hero" style="padding:72px 0 60px;">
+  <img class="hero-mountain" src="assets/icon_white.png" alt="">
+  <div class="wrap hero-inner">
+    <div class="eyebrow-line"><span class="rule"></span> About</div>
+    <h1 style="font-size:clamp(2.1rem,4vw,3rem);">Why "Echo"</h1>
+    <p class="lede">The name comes from a place, not a marketing exercise.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="story-block">
+      <div>
+        <p>Echo Paintworks is named after Echo Lake — a spot our founder, Evan Fredin, spent a lot of evenings at with his now-wife back when they were dating, sitting by the fire and talking about what came next.</p>
+        <p>When it came time to name a painting company, "Echo" fit for a simple reason: what you put in comes back to you. Put in careful prep, honest pricing, and materials that actually hold up, and that's what echoes back — a finish that still looks right years later, and customers who call again for the next room, or the next building.</p>
+        <p>Echo Paintworks is based in Vernon and takes on residential and commercial work across the Okanagan Valley.</p>
+      </div>
+      <div>
+        <img src="assets/logo_full_black.png" alt="Echo Paintworks logo">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark section-line-top">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:36px;">
+      <h2>Evan Fredin</h2>
+      <p style="color:var(--stone-light);">Owner &amp; Operator</p>
+    </div>
+    <p style="color:var(--stone-light); max-width:60ch;">Evan runs Echo Paintworks hands-on — quoting the work, often on the tools, and standing behind the result. If you call the number below, you're calling him, not a call centre.</p>
+  </div>
+</section>
+
+<section class="section-line-top">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Get in touch</h2>
+      <p>Have a project in mind? Reach out directly, or use the quote form for a faster scope estimate.</p>
+    </div>
+    <div class="info-list" style="max-width:480px;">
+      <div class="info-row"><span class="label">Phone</span><a class="value" href="tel:7782128528">778-212-8528</a></div>
+      <div class="info-row"><span class="label">Email</span><a class="value" href="mailto:Contact@Echopaintworks.com">Contact@Echopaintworks.com</a></div>
+      <div class="info-row"><span class="label">Area</span><span class="value">Vernon &amp; the Okanagan Valley, BC</span></div>
+    </div>
+    <a href="quote.html" class="btn btn-dark" style="margin-top:28px;">Go to the quote form</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <img src="assets/logo_full_white.png" alt="Echo Paintworks">
+        <p>Residential &amp; commercial painting based in Vernon, BC, serving the greater Okanagan Valley.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="index.html">Home</a>
+        <a href="account.html">Account</a>
+        <a href="quote.html">Get a Quote</a>
+        <a href="services.html">Services</a>
+        <a href="past-work.html">Past Work</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="tel:7782128528">778-212-8528</a>
+        <a href="mailto:Contact@Echopaintworks.com">Contact@Echopaintworks.com</a>
+        <p>Okanagan, BC</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Echo Paintworks. All rights reserved.</span>
+      <span>A Fresher Perspective.</span>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="script.js"></script>
+</body>
+</html>

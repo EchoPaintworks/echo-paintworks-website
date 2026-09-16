@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — Echo Paintworks</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="account.html" class="active">Account</a>
+      <a href="quote.html">Get a Quote</a>
+      <a href="services.html">Services</a>
+      <a href="past-work.html">Past Work</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section style="padding:64px 0;">
+  <div class="wrap" style="max-width:440px;">
+    <div class="eyebrow-line"><span class="rule"></span> Log In</div>
+    <h1 style="font-size:2rem; margin-bottom:28px;">Welcome back</h1>
+
+    <form id="loginForm" class="quote-form" style="grid-template-columns:1fr;">
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-fill" id="submitBtn">Log in</button>
+        <p class="form-note" id="formMsg"></p>
+      </div>
+    </form>
+
+    <p style="margin-top:20px; font-size:0.95rem; color:var(--stone);">No account yet? <a href="signup.html" id="signupLink" style="color:var(--lake); text-decoration:underline;">Create one</a></p>
+  </div>
+</section>
+
+<script>
+const supa = supabase.createClient(window.ECHO_CONFIG.SUPABASE_URL, window.ECHO_CONFIG.SUPABASE_ANON_KEY);
+
+(function() {
+  const next = new URLSearchParams(window.location.search).get('next');
+  if (next) document.getElementById('signupLink').href = 'signup.html?next=' + encodeURIComponent(next);
+})();
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('formMsg');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  msg.textContent = "Logging in...";
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  const { data, error } = await supa.auth.signInWithPassword({ email, password });
+  if (error) {
+    msg.textContent = error.message;
+    btn.disabled = false;
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const next = params.get('next');
+  if (next && next.endsWith('.html')) {
+    window.location.href = next;
+    return;
+  }
+
+  const { data: profile } = await supa
+    .from('profiles')
+    .select('role')
+    .eq('id', data.user.id)
+    .single();
+
+  window.location.href = (profile && profile.role === 'admin') ? 'admin.html' : 'dashboard.html';
+});
+</script>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Echo Paintworks. All rights reserved.</span>
+      <span>A Fresher Perspective.</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="script.js"></script>
+</body>
+</html>

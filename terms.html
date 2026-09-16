@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms &amp; Conditions — Echo Paintworks</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/icon_black.png" alt="">
+      <span class="brand-word">Echo <span class="thin">Paintworks</span></span>
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="account.html">Account</a>
+      <a href="quote.html">Get a Quote</a>
+      <a href="services.html">Services</a>
+      <a href="past-work.html">Past Work</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section style="padding:64px 0;">
+  <div class="wrap" style="max-width:760px;">
+    <h1 style="font-size:2rem; margin-bottom:8px;">Terms &amp; Conditions</h1>
+    <p style="color:var(--stone); margin-bottom:32px;">Last updated: September 2026</p>
+
+    <h3>Text messaging terms</h3>
+    <p>By providing your phone number and opting in, you agree to receive account and project update text messages from Echo Paintworks. Message frequency varies based on your project. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help. Carriers are not liable for delayed or undelivered messages.</p>
+
+    <h3 style="margin-top:32px;">Accounts</h3>
+    <p>You're responsible for keeping your account login information secure. Let us know right away if you believe your account has been accessed without your permission.</p>
+
+    <h3 style="margin-top:32px;">Quotes and payments</h3>
+    <p>Quotes are estimates based on the information available at the time. Final pricing may be adjusted if project scope changes. Payments made online are processed securely through Stripe.</p>
+
+    <h3 style="margin-top:32px;">Contact</h3>
+    <p>Questions? Reach us at <a href="mailto:Contact@Echopaintworks.com">Contact@Echopaintworks.com</a> or 778-212-8528.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Echo Paintworks. All rights reserved.</span>
+      <span>A Fresher Perspective.</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="script.js"></script>
+</body>
+</html>
